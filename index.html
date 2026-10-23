@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Space Junk</title>
+    <!-- noprotect -->
+    <!--
+      The line above turns off the p5 web editor's infinite-loop protection.
+      That feature rewrites every .js file that has a loop in it, and the
+      rewriter crashes on class fields like `static WIDTH = 50;`. When that
+      happens the sketch silently never starts. Keep that line.
+    -->
+    <script src="https://cdn.jsdelivr.net/npm/p5@2.3.4/lib/p5.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/p5.sound@0.4.1/dist/p5.sound.min.js"></script>
+
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main></main>
+    <script src="sketch.js"></script>
+    <script src="game.js"></script>
+    <script src="level.js"></script>
+    <script src="physics.js"></script>
+    <script src="inputs.js"></script>
+    <script src="magpie.js"></script>
+    <script src="mothership.js"></script>
+    <script src="junk.js"></script>
+    <script src="utils.js"></script>
+  </body>
+</html>
