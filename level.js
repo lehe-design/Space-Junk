@@ -27,11 +27,9 @@ class Level {
   }
 
   /** Give the remaining time for this level in milliseconds. */
-  timeLeft() {
-    // TODO (Phase 5): Return the initial time minus the elapsed time, but
-    // never less than zero.
-    return 0;
-  }
+ timeLeft() {
+  return Math.max(0, this.time.initial - this.time.elapsed);
+}
 
   /**
    * Draws the UI chrome (timer, score, and lives) and the level's junk. The
@@ -39,22 +37,44 @@ class Level {
    * and lives.
    **/
   draw(score, lives) {
-    push();
-    // TODO (Phase 5): Draw the timer, score, and lives here, before the
-    // junk, so they're underneath everything else.
-    //  - Timer: top left, as minutes:seconds. Use this.timeLeft() and
-    //    timeToStringParts().
-    //  - Score: top right, in the same text style as the timer.
-    //  - Lives: bottom left, one small Magpie for each spare life (lives - 1
-    //    of them). Magpie.drawMagpie() draws around (0, 0), so translate and
-    //    scale first.
+  push();
 
-    // junk
-    for (const junk of this.junk) {
-      junk.draw();
-    }
+  // Timer and score
+  noStroke();
+  fill("#FFE6A7");
+  textSize(Level.HUD_TEXT_SIZE);
+
+  const parts = timeToStringParts(this.timeLeft());
+
+  textAlign(LEFT, TOP);
+  text(
+    `${parts.minutes}:${parts.seconds}`,
+    Level.HUD_PAD,
+    Level.HUD_PAD
+  );
+
+  textAlign(RIGHT, TOP);
+  text(score, width - Level.HUD_PAD, Level.HUD_PAD);
+
+  // Spare ships
+  for (let i = 0; i < lives - 1; i++) {
+    push();
+    translate(
+      Level.LIVES_PAD_LEFT + i * Level.LIVES_GAP,
+      height - Level.LIVES_PAD_BOTTOM
+    );
+    scale(Level.LIVES_SCALE);
+    Magpie.drawMagpie({ rotation: 0, beam: false });
     pop();
   }
+
+  // Junk
+  for (const junk of this.junk) {
+    junk.draw();
+  }
+
+  pop();
+}
 
   /**
    * Moves anything owned by the level (junk, comets, etc). If the `countTime`
