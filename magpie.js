@@ -23,28 +23,35 @@ class Magpie {
   }
 
   draw() {
-    push();
-    drawEverywhere({
-      offset: this.physics,
-      drawFn: () => {
-        // TODO (Phase 4): If this.capturedJunk isn't null, draw it here, so
-        // the ship is drawn on top of it. Rotate by the Magpie's rotation,
-        // translate to (0, Magpie.CARGO_Y), and call Junk.drawJunk(). Use
-        // push() and pop() so the ship below isn't moved too.
-        Magpie.drawMagpie({ rotation: this.physics.rotation, beam: this.beam });
-        if (game.debug) {
-          this.physics.draw();
-        }
-      },
-    });
-    pop();
-  }
+  push();
+  drawEverywhere({
+    offset: this.physics,
+    drawFn: () => {
+      if (this.capturedJunk !== null) {
+        push();
+        rotate(this.physics.rotation);
+        translate(0, Magpie.CARGO_Y);
+        Junk.drawJunk();
+        pop();
+      }
 
-  /** Sets the captured junk to the given one, and turns off the beam. */
-  captureJunk(junk) {
-    // TODO (Phase 4): Remember the junk in this.capturedJunk, and switch the
-    // beam off.
-  }
+      Magpie.drawMagpie({
+        rotation: this.physics.rotation,
+        beam: this.beam
+      });
+
+      if (game.debug) {
+        this.physics.draw();
+      }
+    },
+  });
+  pop();
+}
+
+ captureJunk(junk) {
+  this.capturedJunk = junk;
+  this.beam = false;
+}
 
   // this method is static. That means it doesn't use `this` to gain access to
   // instance members, because there _is_ no instance. This is essentially a

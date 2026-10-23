@@ -123,13 +123,27 @@ class Game {
    * is delivered.
    **/
   resolveDropoff(delta) {
-    // TODO (Phase 4): If the Magpie isn't carrying junk, return false. If
-    // the carried junk is within Mothership.PICKUP_DIAMETER / 2 of the
-    // Mothership, add delta to its dropoffTime. Otherwise, drain its
-    // dropoffTime by delta, but not below zero. Return true when dropoffTime
-    // is more than Game.JUNK_DROPOFF_TIME_MS.
+  const junk = this.magpie.capturedJunk;
+
+  if (junk === null) {
     return false;
   }
+
+  const distance = dist(
+    junk.physics.x,
+    junk.physics.y,
+    this.mothership.physics.x,
+    this.mothership.physics.y
+  );
+
+  if (distance < Mothership.PICKUP_DIAMETER / 2) {
+    junk.dropoffTime += delta;
+  } else {
+    junk.dropoffTime = Math.max(0, junk.dropoffTime - delta);
+  }
+
+  return junk.dropoffTime > Game.JUNK_DROPOFF_TIME_MS;
+}
 
   draw() {
     this.level.draw(this.score, this.lives);
@@ -157,10 +171,10 @@ class Game {
   }
 
   updateScore(reason) {
-    // TODO (Phase 4): When the reason is "dropoff", add Game.SCORE_DROPOFF
-    // to the score.
+  if (reason === "dropoff") {
+    this.score += Game.SCORE_DROPOFF;
   }
-
+}
   isLevelComplete() {
     // level is complete when there is no more junk to salvage and the magpie
     // isn't hauling anything.
